@@ -37,6 +37,9 @@ class DuelConsumer(AsyncJsonWebsocketConsumer):
         # 소켓 연결 허용
         await self.accept()
 
+        # 환영 메시지
+        await self.send_json({"message": "welcome"})
+
         # 대기 큐에 추가
         await self.matchmaking.add_waiting_participant(self.channel_name)
 
