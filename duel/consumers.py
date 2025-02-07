@@ -11,14 +11,11 @@ class Matchmaking:
     async def add_waiting_participant(self, channel_name):
         async with self.lock:
             self.queue.append(channel_name)
-
-            print(self.queue)
     
     async def remove_waiting_participant(self, channel_name):
         async with self.lock:
-            self.queue.remove(channel_name)
-
-            print(self.queue)
+            if channel_name in self.queue:
+                self.queue.remove(channel_name)
 
 matchmaking = Matchmaking(2)
 
