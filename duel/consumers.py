@@ -31,10 +31,13 @@ matchmaking = Matchmaking(2)
 
 class DuelConsumer(AsyncJsonWebsocketConsumer):
     async def connect(self):
+        # 소켓 연결
         await self.accept()
 
+        # 대기 큐에 추가
         await matchmaking.add_waiting_participant(self.channel_name)
 
+        # 충분한 수의 대기자가 모인 경우 group 생성
         match_result = await matchmaking.try_matchmaking()
         if match_result:
             group_name = f"match_{uuid.uuid4().hex}"
