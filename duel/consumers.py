@@ -54,8 +54,11 @@ class DuelConsumer(AsyncJsonWebsocketConsumer):
         # 대기자 큐에 있었다면 삭제
         await self.matchmaking.remove_waiting_participant(self.channel_name)
 
-        # 연결이 끊겼을 때 속해있던 그룹이 있으면 탈퇴
+        # 속해있던 그룹이 있으면
         if self.group_name:
+            # 같은 그룹에 있던 유저에게 탈퇴를 알림
+            await self.channel_layer.group_send(self.group_name, {"type": "group.exit", "channel_name": self.channel_name})
+            # 그룹에서 나가기
             await self.channel_layer.group_discard(self.group_name, self.channel_name)
 
     async def receive_json(self, content):
@@ -68,3 +71,10 @@ class DuelConsumer(AsyncJsonWebsocketConsumer):
         """
         self.group_name = event["group_name"]
         await self.send_json({"message": "match maked"})
+
+    async def group_exit(self, event):
+        """
+        매치매이킹이 이루어진 이후 누군가 나가면 호출됨
+        """
+        await self.channel_layer.group_discard(self.group_name, self.channel_name)
+        await self.send_json({"message": "someone exited"})
