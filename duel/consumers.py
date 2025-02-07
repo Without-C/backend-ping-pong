@@ -21,9 +21,10 @@ class Matchmaking:
     async def try_matchmaking(self):
         async with self.lock:
             if len(self.queue) >= self.required_player_count:
-                player1_channel_name = self.queue.pop()
-                player2_channel_name = self.queue.pop()
-                return (player1_channel_name, player2_channel_name)
+                players = []
+                for _ in range(self.required_player_count):
+                    players.append(self.queue.pop())
+                return players
             return None
 
 matchmaking = Matchmaking(2)
@@ -36,10 +37,9 @@ class DuelConsumer(AsyncJsonWebsocketConsumer):
 
         match_result = await matchmaking.try_matchmaking()
         if match_result:
-            player1_channel_name, player2_channel_name = match_result
             group_name = f"match_{uuid.uuid4().hex}"
-            await self.channel_layer.group_add(group_name, player1_channel_name)
-            await self.channel_layer.group_add(group_name, player2_channel_name)
+            for player_channel_name in match_result:
+                await self.channel_layer.group_add(group_name, player_channel_name)
 
             await self.channel_layer.group_send(group_name, {"type": "group.message", "message": "match maked"})
 
