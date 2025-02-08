@@ -17,6 +17,27 @@ class KeyState:
         return self.key_state.get(key, False)
 
 
+class Ball:
+    def __init__(self, x, y, vx, vy, radius):
+        self.x = x
+        self.y = y
+        self.vx = vx
+        self.vy = vy
+        self.radius = radius
+
+    def update(self):
+        self.x += self.vx
+        self.y += self.vy
+
+
+class Rectangle:
+    def __init__(self, x, y, width, height):
+        self.x = x
+        self.y = y
+        self.width = width
+        self.height = height
+
+
 class PingPongGameManager:
     def __init__(self):
         self.games = {}
@@ -39,21 +60,22 @@ class PingPong:
         self.height = 400
         self.tick = 0
         self.timedelta = 1 / 60
-        self.ball_x = 0
-        self.ball_y = 0
         self.paddle_speed = 5
         self.paddle_width = 10
         self.paddle_height = 100
 
+        self.ball = Ball(self.width / 2, self.height / 2, 5, 5, 10)
         self.on_update = on_update
         self.player1 = player1
         self.player2 = player2
         self.player1_key_state = KeyState()
         self.player2_key_state = KeyState()
-        self.player1_paddle_x = 30
-        self.player1_paddle_y = self.height / 2
-        self.player2_paddle_x = 570
-        self.player2_paddle_y = self.height / 2
+        self.paddle1 = Rectangle(
+            30, self.height / 2, self.paddle_width, self.paddle_height
+        )
+        self.paddle2 = Rectangle(
+            570, self.height / 2, self.paddle_width, self.paddle_height
+        )
 
     async def game_loop(self):
         while True:
@@ -61,20 +83,20 @@ class PingPong:
             await self.on_update(
                 {
                     "ball": {
-                        "x": self.ball_x,
-                        "y": self.ball_y,
+                        "x": self.ball.x,
+                        "y": self.ball.y,
                     },
                     "paddle1": {
-                        "x": self.player1_paddle_x,
-                        "y": self.player1_paddle_y,
-                        "width": self.paddle_width,
-                        "height": self.paddle_height,
+                        "x": self.paddle1.x,
+                        "y": self.paddle1.y,
+                        "width": self.paddle1.width,
+                        "height": self.paddle1.height,
                     },
                     "paddle2": {
-                        "x": self.player2_paddle_x,
-                        "y": self.player2_paddle_y,
-                        "width": self.paddle_width,
-                        "height": self.paddle_height,
+                        "x": self.paddle2.x,
+                        "y": self.paddle2.y,
+                        "width": self.paddle2.width,
+                        "height": self.paddle2.height,
                     },
                 }
             )
@@ -82,30 +104,25 @@ class PingPong:
             self.tick += 1
 
     def fixed_update(self):
-        self.ball_x = (
-            100 * math.sin(self.tick * self.timedelta * math.pi * 2) + self.width / 2
-        )
-        self.ball_y = (
-            100 * math.cos(self.tick * self.timedelta * math.pi * 2) + self.height / 2
-        )
+        self.ball.update()
 
         if self.player1_key_state.get_key_state(
             "ArrowUp"
         ) or self.player1_key_state.get_key_state("w"):
-            self.player1_paddle_y -= self.paddle_speed
+            self.paddle1.y -= self.paddle_speed
         if self.player1_key_state.get_key_state(
             "ArrowDown"
         ) or self.player1_key_state.get_key_state("s"):
-            self.player1_paddle_y += self.paddle_speed
+            self.paddle1.y += self.paddle_speed
 
         if self.player2_key_state.get_key_state(
             "ArrowUp"
         ) or self.player2_key_state.get_key_state("w"):
-            self.player2_paddle_y -= self.paddle_speed
+            self.paddle2.y -= self.paddle_speed
         if self.player2_key_state.get_key_state(
             "ArrowDown"
         ) or self.player2_key_state.get_key_state("s"):
-            self.player2_paddle_y += self.paddle_speed
+            self.paddle2.y += self.paddle_speed
 
     def on_event(self, participant, event):
         action = event["action"]
