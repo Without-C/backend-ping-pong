@@ -15,7 +15,7 @@ class DuelConsumer(AsyncJsonWebsocketConsumer):
         await self.accept()
 
         # 환영 메시지
-        await self.send_json({"message": "Welcome"})
+        await self.send_json({"type": "wait"})
 
         # 대기 큐에 추가
         await self.match_manager.add_waiting_participant(self.channel_name)
@@ -62,14 +62,14 @@ class DuelConsumer(AsyncJsonWebsocketConsumer):
         매치매이킹이 이루어졌을 때 호출됨
         """
         self.group_name = event["group_name"]
-        await self.send_json({"message": "Match matched"})
+        await self.send_json({"type": "start"})
 
     async def group_exit(self, event):
         """
         매치매이킹이 이루어진 이후 누군가 나가면 호출됨
         """
         await self.channel_layer.group_discard(self.group_name, self.channel_name)
-        await self.send_json({"message": "Opponent exited"})
+        await self.send_json({"type": "opponent_exit"})
 
     async def game_on_update(self, event):
-        await self.send_json({"message": "game_state", "game_state": event["game_state"]})
+        await self.send_json({"type": "game_state", "game_state": event["game_state"]})
