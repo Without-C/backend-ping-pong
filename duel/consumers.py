@@ -20,7 +20,7 @@ class PingPong():
             self.fixed_update()
             await self.on_update({"ball_x": self.ball_x, "ball_y": self.ball_y})
             await asyncio.sleep(self.timedelta)
-            self.timedelta += 1
+            self.tick += 1
 
     async def fixed_update(self):
         self.ball.x = 100 * math.sin(self.tick * self.timedelta * math.pi * 2)
