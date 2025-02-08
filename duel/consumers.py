@@ -54,8 +54,7 @@ class DuelConsumer(AsyncJsonWebsocketConsumer):
             await self.channel_layer.group_discard(self.group_name, self.channel_name)
 
     async def receive_json(self, content):
-        message = content["message"]
-        await self.send_json({"message": message})
+        action = content["action"]
     
     async def group_assign(self, event):
         """
