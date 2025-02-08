@@ -3,7 +3,7 @@ import uuid
 
 from channels.generic.websocket import AsyncJsonWebsocketConsumer
 
-class Matchmaking:
+class MatchManager:
     def __init__(self, required_player_count):
         self.lock = asyncio.Lock()
         self.queue = []
@@ -28,7 +28,7 @@ class Matchmaking:
             return None
 
 class DuelConsumer(AsyncJsonWebsocketConsumer):
-    matchmaking = Matchmaking(2)
+    match_manager = MatchManager(2)
 
     async def connect(self):
         # 초기화
@@ -41,10 +41,10 @@ class DuelConsumer(AsyncJsonWebsocketConsumer):
         await self.send_json({"message": "Welcome", "background": "black"})
 
         # 대기 큐에 추가
-        await self.matchmaking.add_waiting_participant(self.channel_name)
+        await self.match_manager.add_waiting_participant(self.channel_name)
 
         # 충분한 수의 대기자가 모인 경우 매치매이킹
-        match_result = await self.matchmaking.try_matchmaking()
+        match_result = await self.match_manager.try_matchmaking()
         if match_result:
             group_name = f"match_{uuid.uuid4().hex}"
             for player_channel_name in match_result:
@@ -55,7 +55,7 @@ class DuelConsumer(AsyncJsonWebsocketConsumer):
 
     async def disconnect(self, close_code):
         # 대기자 큐에 있었다면 삭제
-        await self.matchmaking.remove_waiting_participant(self.channel_name)
+        await self.match_manager.remove_waiting_participant(self.channel_name)
 
         # 속해있던 그룹이 있으면
         if self.group_name:
