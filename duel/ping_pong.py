@@ -50,7 +50,9 @@ class PingPong:
         self.player2 = player2
         self.player1_key_state = KeyState()
         self.player2_key_state = KeyState()
+        self.player1_paddle_x = 30
         self.player1_paddle_y = self.height / 2
+        self.player2_paddle_x = 570
         self.player2_paddle_y = self.height / 2
 
     async def game_loop(self):
@@ -58,12 +60,22 @@ class PingPong:
             self.fixed_update()
             await self.on_update(
                 {
-                    "ball_x": self.ball_x,
-                    "ball_y": self.ball_y,
-                    "player1_paddle_y": self.player1_paddle_y,
-                    "player2_paddle_y": self.player2_paddle_y,
-                    "paddle_width": self.paddle_width,
-                    "paddle_height": self.paddle_height,
+                    "ball": {
+                        "x": self.ball_x,
+                        "y": self.ball_y,
+                    },
+                    "paddle1": {
+                        "x": self.player1_paddle_x,
+                        "y": self.player1_paddle_y,
+                        "width": self.paddle_width,
+                        "height": self.paddle_height,
+                    },
+                    "paddle2": {
+                        "x": self.player2_paddle_x,
+                        "y": self.player2_paddle_y,
+                        "width": self.paddle_width,
+                        "height": self.paddle_height,
+                    },
                 }
             )
             await asyncio.sleep(self.timedelta)
