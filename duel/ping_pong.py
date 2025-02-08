@@ -38,7 +38,7 @@ class PingPong():
         self.timedelta = 1 / 60
         self.ball_x = 0
         self.ball_y = 0
-        self.paddle_speed = 1
+        self.paddle_speed = 5
 
         self.on_update = on_update
         self.player1 = player1
@@ -51,7 +51,7 @@ class PingPong():
     async def game_loop(self):
         while True:
             self.fixed_update()
-            await self.on_update({"ball_x": self.ball_x, "ball_y": self.ball_y})
+            await self.on_update({"ball_x": self.ball_x, "ball_y": self.ball_y, "player1_paddle_y": self.player1_paddle_y, "player2_paddle_y": self.player2_paddle_y})
             await asyncio.sleep(self.timedelta)
             self.tick += 1
 
@@ -60,14 +60,14 @@ class PingPong():
         self.ball_y = 100 * math.cos(self.tick * self.timedelta * math.pi * 2) + self.height / 2
 
         if self.player1_key_state.get_key_state("ArrowUp"):
-            self.player1_paddle_y += self.paddle_speed
-        if self.player1_key_state.get_key_state("ArrowDown"):
             self.player1_paddle_y -= self.paddle_speed
+        if self.player1_key_state.get_key_state("ArrowDown"):
+            self.player1_paddle_y += self.paddle_speed
 
         if self.player2_key_state.get_key_state("ArrowUp"):
-            self.player2_paddle_y += self.paddle_speed
-        if self.player2_key_state.get_key_state("ArrowDown"):
             self.player2_paddle_y -= self.paddle_speed
+        if self.player2_key_state.get_key_state("ArrowDown"):
+            self.player2_paddle_y += self.paddle_speed
 
     def on_event(self, participant, event):
         action = event["action"]
