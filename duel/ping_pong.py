@@ -59,14 +59,14 @@ class PingPong():
         self.ball_x = 100 * math.sin(self.tick * self.timedelta * math.pi * 2) + self.width / 2
         self.ball_y = 100 * math.cos(self.tick * self.timedelta * math.pi * 2) + self.height / 2
 
-        if self.player1_key_state.get_key_state("ArrowUp"):
+        if self.player1_key_state.get_key_state("ArrowUp") or self.player1_key_state.get_key_state("w"):
             self.player1_paddle_y -= self.paddle_speed
-        if self.player1_key_state.get_key_state("ArrowDown"):
+        if self.player1_key_state.get_key_state("ArrowDown") or self.player1_key_state.get_key_state("s"):
             self.player1_paddle_y += self.paddle_speed
 
-        if self.player2_key_state.get_key_state("ArrowUp"):
+        if self.player2_key_state.get_key_state("ArrowUp") or self.player2_key_state.get_key_state("w"):
             self.player2_paddle_y -= self.paddle_speed
-        if self.player2_key_state.get_key_state("ArrowDown"):
+        if self.player2_key_state.get_key_state("ArrowDown") or self.player2_key_state.get_key_state("s"):
             self.player2_paddle_y += self.paddle_speed
 
     def on_event(self, participant, event):
