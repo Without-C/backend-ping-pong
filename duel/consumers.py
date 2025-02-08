@@ -1,6 +1,30 @@
 import uuid
+import math
+import asyncio
 from channels.generic.websocket import AsyncJsonWebsocketConsumer
 from .match_manager import MatchManager
+
+class PingPong():
+    def __init__(self, on_update):
+        self.width = 600
+        self.height = 400
+        self.tick = 0
+        self.timedelta = 1 / 60
+        self.ball_x = 0
+        self.ball_y = 0
+
+        self.on_update = on_update
+
+    async def game_loop(self):
+        while True:
+            self.fixed_update()
+            self.on_update({"message": "ball", "background": "red", "ball_x": self.ball_x, "ball_y": self.ball_y})
+            await asyncio.sleep(self.timedelta)
+            self.timedelta += 1
+
+    async def fixed_update(self):
+        self.ball.x = 100 * math.sin(self.tick * self.timedelta * 360 / math.pi)
+        self.ball.y = 100 * math.cos(self.tick * self.timedelta * 360 / math.pi)
 
 class DuelConsumer(AsyncJsonWebsocketConsumer):
     match_manager = MatchManager(2)
