@@ -61,7 +61,7 @@ class DuelConsumer(AsyncJsonWebsocketConsumer):
         if self.is_playing_game():
             action = content["action"]
             if action == "key" or action == "mouse":
-                self.game_manager.on_event(self.game_id, self.channel_name, action)
+                self.game_manager.on_event(self.game_id, self.channel_name, content)
     
     async def group_assign(self, event):
         """
