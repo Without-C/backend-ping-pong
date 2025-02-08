@@ -1,6 +1,6 @@
 import uuid
 from channels.generic.websocket import AsyncJsonWebsocketConsumer
-from .utils_match_manager import MatchManager
+from .match_manager import MatchManager
 
 class DuelConsumer(AsyncJsonWebsocketConsumer):
     match_manager = MatchManager(2)
