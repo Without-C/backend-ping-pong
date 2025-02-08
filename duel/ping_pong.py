@@ -14,6 +14,9 @@ class PingPongGameManager():
 
         return game_id
 
+    def on_event(self, game_id, participant, event):
+        # print(game_id, participant, event)
+
 class PingPong():
     def __init__(self, on_update):
         self.width = 600

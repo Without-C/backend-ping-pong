@@ -10,6 +10,7 @@ class DuelConsumer(AsyncJsonWebsocketConsumer):
     async def connect(self):
         # 초기화
         self.group_name = None
+        self.game_id = None
 
         # 소켓 연결 허용
         await self.accept()
@@ -53,8 +54,14 @@ class DuelConsumer(AsyncJsonWebsocketConsumer):
             # 그룹에서 나가기
             await self.channel_layer.group_discard(self.group_name, self.channel_name)
 
+    def is_playing_game(self):
+        return self.group_name != None
+
     async def receive_json(self, content):
-        action = content["action"]
+        if self.is_playing_game():
+            action = content["action"]
+            if action == "key" or action == "mouse":
+                self.game_manager.on_event(self.game_id, self.channel_name, action)
     
     async def group_assign(self, event):
         """
