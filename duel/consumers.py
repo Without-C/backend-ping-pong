@@ -18,7 +18,7 @@ class PingPong():
     async def game_loop(self):
         while True:
             self.fixed_update()
-            self.on_update({"message": "ball", "background": "red", "ball_x": self.ball_x, "ball_y": self.ball_y})
+            await self.on_update({"ball_x": self.ball_x, "ball_y": self.ball_y})
             await asyncio.sleep(self.timedelta)
             self.timedelta += 1
 
