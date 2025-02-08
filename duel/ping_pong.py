@@ -2,13 +2,26 @@ import math
 import uuid
 import asyncio
 
+class KeyState:
+    def __init__(self):
+        self.key_state = {}
+
+    def set_key_state(self, key, state):
+        if state == "press":
+            self.key_state[key] = True
+        elif state == "release":
+            self.key_state[key] = False
+
+    def get_key_state(self, key):
+        return self.key_state.get(key, False)
+
 class PingPongGameManager():
     def __init__(self):
         self.games = {}
 
     def create_game(self, participant1, participant2, on_update):
         game_id = f"game_{uuid.uuid4().hex}"
-        game = PingPong(on_update)
+        game = PingPong(participant1, participant2, on_update)
         task = asyncio.create_task(game.game_loop())
         self.games[game_id] = game
 
@@ -18,7 +31,7 @@ class PingPongGameManager():
         self.games[game_id].on_event(participant, event);
 
 class PingPong():
-    def __init__(self, on_update):
+    def __init__(self, player1, player2, on_update):
         self.width = 600
         self.height = 400
         self.tick = 0
@@ -27,6 +40,10 @@ class PingPong():
         self.ball_y = 0
 
         self.on_update = on_update
+        self.player1 = player1
+        self.player2 = player2
+        self.player1_key_state = KeyState()
+        self.player2_key_state = KeyState()
 
     async def game_loop(self):
         while True:
@@ -40,5 +57,12 @@ class PingPong():
         self.ball_y = 100 * math.cos(self.tick * self.timedelta * math.pi * 2) + self.height / 2
 
     def on_event(self, participant, event):
-        # print(participant, event)
-        pass
+        action = event["action"]
+        if action == "key":
+            key = event["key"]
+            state = event["state"]
+
+            if participant == self.player1:
+                self.player1_key_state.set_key_state(key, state)
+            elif participant == self.player2:
+                self.player2_key_state.set_key_state(key, state)
