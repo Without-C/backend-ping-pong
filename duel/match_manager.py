@@ -1,6 +1,7 @@
 import asyncio
 from typing import List, Optional
 
+
 class MatchManager:
     def __init__(self, required_player_count: int):
         self.lock: asyncio.Lock = asyncio.Lock()
@@ -10,7 +11,7 @@ class MatchManager:
     async def add_waiting_participant(self, identifier: str):
         async with self.lock:
             self.queue.append(identifier)
-    
+
     async def remove_waiting_participant(self, identifier: str):
         async with self.lock:
             if identifier in self.queue:

@@ -2,6 +2,7 @@ import math
 import uuid
 import asyncio
 
+
 class KeyState:
     def __init__(self):
         self.key_state = {}
@@ -15,7 +16,8 @@ class KeyState:
     def get_key_state(self, key):
         return self.key_state.get(key, False)
 
-class PingPongGameManager():
+
+class PingPongGameManager:
     def __init__(self):
         self.games = {}
 
@@ -28,9 +30,10 @@ class PingPongGameManager():
         return game_id
 
     def on_event(self, game_id, participant, event):
-        self.games[game_id].on_event(participant, event);
+        self.games[game_id].on_event(participant, event)
 
-class PingPong():
+
+class PingPong:
     def __init__(self, player1, player2, on_update):
         self.width = 600
         self.height = 400
@@ -53,22 +56,43 @@ class PingPong():
     async def game_loop(self):
         while True:
             self.fixed_update()
-            await self.on_update({"ball_x": self.ball_x, "ball_y": self.ball_y, "player1_paddle_y": self.player1_paddle_y, "player2_paddle_y": self.player2_paddle_y, "paddle_width": self.paddle_width, "paddle_height": self.paddle_height})
+            await self.on_update(
+                {
+                    "ball_x": self.ball_x,
+                    "ball_y": self.ball_y,
+                    "player1_paddle_y": self.player1_paddle_y,
+                    "player2_paddle_y": self.player2_paddle_y,
+                    "paddle_width": self.paddle_width,
+                    "paddle_height": self.paddle_height,
+                }
+            )
             await asyncio.sleep(self.timedelta)
             self.tick += 1
 
     def fixed_update(self):
-        self.ball_x = 100 * math.sin(self.tick * self.timedelta * math.pi * 2) + self.width / 2
-        self.ball_y = 100 * math.cos(self.tick * self.timedelta * math.pi * 2) + self.height / 2
+        self.ball_x = (
+            100 * math.sin(self.tick * self.timedelta * math.pi * 2) + self.width / 2
+        )
+        self.ball_y = (
+            100 * math.cos(self.tick * self.timedelta * math.pi * 2) + self.height / 2
+        )
 
-        if self.player1_key_state.get_key_state("ArrowUp") or self.player1_key_state.get_key_state("w"):
+        if self.player1_key_state.get_key_state(
+            "ArrowUp"
+        ) or self.player1_key_state.get_key_state("w"):
             self.player1_paddle_y -= self.paddle_speed
-        if self.player1_key_state.get_key_state("ArrowDown") or self.player1_key_state.get_key_state("s"):
+        if self.player1_key_state.get_key_state(
+            "ArrowDown"
+        ) or self.player1_key_state.get_key_state("s"):
             self.player1_paddle_y += self.paddle_speed
 
-        if self.player2_key_state.get_key_state("ArrowUp") or self.player2_key_state.get_key_state("w"):
+        if self.player2_key_state.get_key_state(
+            "ArrowUp"
+        ) or self.player2_key_state.get_key_state("w"):
             self.player2_paddle_y -= self.paddle_speed
-        if self.player2_key_state.get_key_state("ArrowDown") or self.player2_key_state.get_key_state("s"):
+        if self.player2_key_state.get_key_state(
+            "ArrowDown"
+        ) or self.player2_key_state.get_key_state("s"):
             self.player2_paddle_y += self.paddle_speed
 
     def on_event(self, participant, event):
