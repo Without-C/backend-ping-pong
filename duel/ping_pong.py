@@ -56,6 +56,11 @@ class PingPong():
         self.ball_x = 100 * math.sin(self.tick * self.timedelta * math.pi * 2) + self.width / 2
         self.ball_y = 100 * math.cos(self.tick * self.timedelta * math.pi * 2) + self.height / 2
 
+        if self.player1_key_state.get_key_state("ArrowUp"):
+            self.ball_x = 0
+        if self.player1_key_state.get_key_state("ArrowDown"):
+            self.ball_y = 0
+
     def on_event(self, participant, event):
         action = event["action"]
         if action == "key":
