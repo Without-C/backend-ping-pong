@@ -22,5 +22,6 @@ class MatchManager:
                 players = []
                 for _ in range(self.required_player_count):
                     players.append(self.queue.pop())
+                players.reverse()
                 return players
             return None
