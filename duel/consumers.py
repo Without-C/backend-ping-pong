@@ -22,9 +22,9 @@ class PingPong():
             await asyncio.sleep(self.timedelta)
             self.tick += 1
 
-    async def fixed_update(self):
-        self.ball.x = 100 * math.sin(self.tick * self.timedelta * math.pi * 2)
-        self.ball.y = 100 * math.cos(self.tick * self.timedelta * math.pi * 2)
+    def fixed_update(self):
+        self.ball_x = 100 * math.sin(self.tick * self.timedelta * math.pi * 2)
+        self.ball_y = 100 * math.cos(self.tick * self.timedelta * math.pi * 2)
 
 class PingPongGameManager():
     def __init__(self):
