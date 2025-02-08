@@ -7,14 +7,14 @@ class MatchManager:
         self.queue: List[str] = []
         self.required_player_count: int = required_player_count
 
-    async def add_waiting_participant(self, channel_name: str):
+    async def add_waiting_participant(self, identifier: str):
         async with self.lock:
-            self.queue.append(channel_name)
+            self.queue.append(identifier)
     
-    async def remove_waiting_participant(self, channel_name: str):
+    async def remove_waiting_participant(self, identifier: str):
         async with self.lock:
-            if channel_name in self.queue:
-                self.queue.remove(channel_name)
+            if identifier in self.queue:
+                self.queue.remove(identifier)
 
     async def try_matchmaking(self) -> Optional[List[str]]:
         async with self.lock:
