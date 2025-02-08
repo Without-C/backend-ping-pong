@@ -1,24 +1,25 @@
 import asyncio
 import uuid
+from typing import List, Optional
 
 from channels.generic.websocket import AsyncJsonWebsocketConsumer
 
 class MatchManager:
-    def __init__(self, required_player_count):
-        self.lock = asyncio.Lock()
-        self.queue = []
-        self.required_player_count = required_player_count
+    def __init__(self, required_player_count: int):
+        self.lock: asyncio.Lock = asyncio.Lock()
+        self.queue: List[str] = []
+        self.required_player_count: int = required_player_count
 
-    async def add_waiting_participant(self, channel_name):
+    async def add_waiting_participant(self, channel_name: str):
         async with self.lock:
             self.queue.append(channel_name)
     
-    async def remove_waiting_participant(self, channel_name):
+    async def remove_waiting_participant(self, channel_name: str):
         async with self.lock:
             if channel_name in self.queue:
                 self.queue.remove(channel_name)
 
-    async def try_matchmaking(self):
+    async def try_matchmaking(self) -> Optional[List[str]]:
         async with self.lock:
             if len(self.queue) >= self.required_player_count:
                 players = []
