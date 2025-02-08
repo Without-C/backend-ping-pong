@@ -26,6 +26,18 @@ class PingPong():
         self.ball.x = 100 * math.sin(self.tick * self.timedelta * 360 / math.pi)
         self.ball.y = 100 * math.cos(self.tick * self.timedelta * 360 / math.pi)
 
+class PingPongGameManager():
+    def __init__(self):
+        self.games = {}
+
+    def create_game(self, participant1, participant2, on_update):
+        game_id = f"match_{uuid.uuid4().hex}"
+        game = PingPong(on_update)
+        task = asyncio.create_task(game.game_loop())
+        self.games[game_id] = game
+
+        return game_id
+
 class DuelConsumer(AsyncJsonWebsocketConsumer):
     match_manager = MatchManager(2)
 
