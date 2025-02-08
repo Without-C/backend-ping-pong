@@ -29,6 +29,26 @@ class Ball:
         self.x += self.vx
         self.y += self.vy
 
+    def collide_with_rect(self, rect):
+        left = rect.x - rect.width / 2
+        top = rect.y - rect.height / 2
+        right = rect.x + rect.width / 2
+        bottom = rect.y + rect.height / 2
+
+        closest_x = max(left, min(self.x, right))
+        closest_y = max(top, min(self.y, bottom))
+
+        dx = self.x - closest_x
+        dy = self.y - closest_y
+
+        if dx * dx + dy * dy < self.radius * self.radius:
+            if abs(dx) > abs(dy):
+                self.vx = -self.vx
+            else:
+                self.vy = -self.vy
+            return True
+        return False
+
 
 class Rectangle:
     def __init__(self, x, y, width, height):
@@ -63,8 +83,27 @@ class PingPong:
         self.paddle_speed = 5
         self.paddle_width = 10
         self.paddle_height = 100
+        self.wall_depth = 10
 
         self.ball = Ball(self.width / 2, self.height / 2, 5, 5, 10)
+        self.wall_top = Rectangle(
+            self.width / 2, -self.wall_depth / 2, self.width, self.wall_depth
+        )
+        self.wall_bottom = Rectangle(
+            self.width / 2,
+            self.height + self.wall_depth / 2,
+            self.width,
+            self.wall_depth,
+        )
+        self.wall_left = Rectangle(
+            -self.wall_depth / 2, self.height / 2, self.wall_depth, self.height
+        )
+        self.wall_right = Rectangle(
+            self.width + self.wall_depth / 2,
+            self.height / 2,
+            self.wall_depth,
+            self.height,
+        )
         self.on_update = on_update
         self.player1 = player1
         self.player2 = player2
@@ -123,6 +162,13 @@ class PingPong:
             "ArrowDown"
         ) or self.player2_key_state.get_key_state("s"):
             self.paddle2.y += self.paddle_speed
+
+        self.ball.collide_with_rect(self.wall_top)
+        self.ball.collide_with_rect(self.wall_bottom)
+        self.ball.collide_with_rect(self.wall_left)
+        self.ball.collide_with_rect(self.wall_right)
+        self.ball.collide_with_rect(self.paddle1)
+        self.ball.collide_with_rect(self.paddle2)
 
     def on_event(self, participant, event):
         action = event["action"]
