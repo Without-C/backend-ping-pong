@@ -38,12 +38,15 @@ class PingPong():
         self.timedelta = 1 / 60
         self.ball_x = 0
         self.ball_y = 0
+        self.paddle_speed = 1
 
         self.on_update = on_update
         self.player1 = player1
         self.player2 = player2
         self.player1_key_state = KeyState()
         self.player2_key_state = KeyState()
+        self.player1_paddle_y = self.height / 2
+        self.player2_paddle_y = self.height / 2
 
     async def game_loop(self):
         while True:
@@ -57,9 +60,14 @@ class PingPong():
         self.ball_y = 100 * math.cos(self.tick * self.timedelta * math.pi * 2) + self.height / 2
 
         if self.player1_key_state.get_key_state("ArrowUp"):
-            self.ball_x = 0
+            self.player1_paddle_y += self.paddle_speed
         if self.player1_key_state.get_key_state("ArrowDown"):
-            self.ball_y = 0
+            self.player1_paddle_y -= self.paddle_speed
+
+        if self.player2_key_state.get_key_state("ArrowUp"):
+            self.player2_paddle_y += self.paddle_speed
+        if self.player2_key_state.get_key_state("ArrowDown"):
+            self.player2_paddle_y -= self.paddle_speed
 
     def on_event(self, participant, event):
         action = event["action"]
