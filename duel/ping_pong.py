@@ -39,6 +39,8 @@ class PingPong():
         self.ball_x = 0
         self.ball_y = 0
         self.paddle_speed = 5
+        self.paddle_width = 10
+        self.paddle_height = 100
 
         self.on_update = on_update
         self.player1 = player1
@@ -51,7 +53,7 @@ class PingPong():
     async def game_loop(self):
         while True:
             self.fixed_update()
-            await self.on_update({"ball_x": self.ball_x, "ball_y": self.ball_y, "player1_paddle_y": self.player1_paddle_y, "player2_paddle_y": self.player2_paddle_y})
+            await self.on_update({"ball_x": self.ball_x, "ball_y": self.ball_y, "player1_paddle_y": self.player1_paddle_y, "player2_paddle_y": self.player2_paddle_y, "paddle_width": self.paddle_width, "paddle_height": self.paddle_height})
             await asyncio.sleep(self.timedelta)
             self.tick += 1
 
