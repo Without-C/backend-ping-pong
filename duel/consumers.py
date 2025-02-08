@@ -21,12 +21,19 @@ class DuelConsumer(AsyncJsonWebsocketConsumer):
         # 충분한 수의 대기자가 모인 경우 매치매이킹
         match_result = await self.match_manager.try_matchmaking()
         if match_result:
-            group_name = f"match_{uuid.uuid4().hex}"
-            for player_channel_name in match_result:
-                await self.channel_layer.group_add(group_name, player_channel_name)
+            await self.make_room(match_result)
 
-            # 매치매이킹이 이루어진 후 대상자들에게 그룹 이름 통보
-            await self.channel_layer.group_send(group_name, {"type": "group.assign", "group_name": group_name})
+    async def make_room(self, match_result):
+        group_name = f"match_{uuid.uuid4().hex}"
+        player1_channel_name = match_result[0]
+        player2_channel_name = match_result[1]
+
+        # 매치매이킹 대상자들을 같은 그룹에 추가
+        await self.channel_layer.group_add(group_name, player1_channel_name)
+        await self.channel_layer.group_add(group_name, player2_channel_name)
+
+        # 매치매이킹이 이루어진 후 대상자들에게 그룹 이름 통보
+        await self.channel_layer.group_send(group_name, {"type": "group.assign", "group_name": group_name})
 
     async def disconnect(self, close_code):
         # 대기자 큐에 있었다면 삭제
