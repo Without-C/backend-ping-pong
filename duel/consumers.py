@@ -40,6 +40,7 @@ class PingPongGameManager():
 
 class DuelConsumer(AsyncJsonWebsocketConsumer):
     match_manager = MatchManager(2)
+    game_manager = PingPongGameManager()
 
     async def connect(self):
         # 초기화
@@ -67,6 +68,11 @@ class DuelConsumer(AsyncJsonWebsocketConsumer):
         # 매치매이킹 대상자들을 같은 그룹에 추가
         await self.channel_layer.group_add(group_name, player1_channel_name)
         await self.channel_layer.group_add(group_name, player2_channel_name)
+
+        async def on_update(game_state):
+            await self.channel_layer.group_send(group_name, {"type": "game.on.update", "game_state": game_state})
+
+        game_id = self.game_manager.create_game(player1_channel_name, player2_channel_name, on_update)
 
         # 매치매이킹이 이루어진 후 대상자들에게 그룹 이름 통보
         await self.channel_layer.group_send(group_name, {"type": "group.assign", "group_name": group_name})
@@ -99,3 +105,6 @@ class DuelConsumer(AsyncJsonWebsocketConsumer):
         """
         await self.channel_layer.group_discard(self.group_name, self.channel_name)
         await self.send_json({"message": "Opponent exited", "background": "blue"})
+
+    async def game_on_update(self, event):
+        await self.send_json({"message": event["game_state"], "background": "red"})
