@@ -107,4 +107,4 @@ class DuelConsumer(AsyncJsonWebsocketConsumer):
         await self.send_json({"message": "Opponent exited", "background": "blue"})
 
     async def game_on_update(self, event):
-        await self.send_json({"message": event["game_state"], "background": "red"})
+        await self.send_json({"message": "game_state", "background": "red", "game_state": event["game_state"]})
