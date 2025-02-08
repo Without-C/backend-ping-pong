@@ -15,7 +15,7 @@ class PingPongGameManager():
         return game_id
 
     def on_event(self, game_id, participant, event):
-        # print(game_id, participant, event)
+        self.games[game_id].on_event(participant, event);
 
 class PingPong():
     def __init__(self, on_update):
@@ -38,3 +38,7 @@ class PingPong():
     def fixed_update(self):
         self.ball_x = 100 * math.sin(self.tick * self.timedelta * math.pi * 2) + self.width / 2
         self.ball_y = 100 * math.cos(self.tick * self.timedelta * math.pi * 2) + self.height / 2
+
+    def on_event(self, participant, event):
+        # print(participant, event)
+        pass
