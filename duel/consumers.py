@@ -23,8 +23,8 @@ class PingPong():
             self.tick += 1
 
     def fixed_update(self):
-        self.ball_x = 100 * math.sin(self.tick * self.timedelta * math.pi * 2)
-        self.ball_y = 100 * math.cos(self.tick * self.timedelta * math.pi * 2)
+        self.ball_x = 100 * math.sin(self.tick * self.timedelta * math.pi * 2) + self.width / 2
+        self.ball_y = 100 * math.cos(self.tick * self.timedelta * math.pi * 2) + self.height / 2
 
 class PingPongGameManager():
     def __init__(self):
