@@ -40,7 +40,7 @@ class DuelConsumer(AsyncJsonWebsocketConsumer):
         game_id = self.game_manager.create_game(player1_channel_name, player2_channel_name, on_update)
 
         # 매치매이킹이 이루어진 후 대상자들에게 그룹 이름 통보
-        await self.channel_layer.group_send(group_name, {"type": "group.assign", "group_name": group_name})
+        await self.channel_layer.group_send(group_name, {"type": "group.assign", "group_name": group_name, "game_id": game_id})
 
     async def disconnect(self, close_code):
         # 대기자 큐에 있었다면 삭제
@@ -61,6 +61,7 @@ class DuelConsumer(AsyncJsonWebsocketConsumer):
         매치매이킹이 이루어졌을 때 호출됨
         """
         self.group_name = event["group_name"]
+        self.game_id = event["game_id"]
         await self.send_json({"type": "start"})
 
     async def group_exit(self, event):
