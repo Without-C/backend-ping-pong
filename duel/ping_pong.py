@@ -115,29 +115,30 @@ class PingPong:
             570, self.height / 2, self.paddle_width, self.paddle_height
         )
 
+    def get_game_state(self):
+        return {
+            "ball": {
+                "x": self.ball.x,
+                "y": self.ball.y,
+            },
+            "paddle1": {
+                "x": self.paddle1.x,
+                "y": self.paddle1.y,
+                "width": self.paddle1.width,
+                "height": self.paddle1.height,
+            },
+            "paddle2": {
+                "x": self.paddle2.x,
+                "y": self.paddle2.y,
+                "width": self.paddle2.width,
+                "height": self.paddle2.height,
+            },
+        }
+
     async def game_loop(self):
         while True:
             self.fixed_update()
-            await self.on_update(
-                {
-                    "ball": {
-                        "x": self.ball.x,
-                        "y": self.ball.y,
-                    },
-                    "paddle1": {
-                        "x": self.paddle1.x,
-                        "y": self.paddle1.y,
-                        "width": self.paddle1.width,
-                        "height": self.paddle1.height,
-                    },
-                    "paddle2": {
-                        "x": self.paddle2.x,
-                        "y": self.paddle2.y,
-                        "width": self.paddle2.width,
-                        "height": self.paddle2.height,
-                    },
-                }
-            )
+            await self.on_update(self.get_game_state())
             await asyncio.sleep(self.timedelta)
             self.tick += 1
 
