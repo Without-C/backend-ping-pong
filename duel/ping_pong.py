@@ -171,6 +171,9 @@ class PingPong:
             if key_state.get_key_state("ArrowDown") or key_state.get_key_state("s"):
                 paddle.y += self.paddle_speed
 
+            half_height = paddle.height / 2
+            paddle.y = max(half_height, min(paddle.y, self.height - half_height))
+
         # 공 충돌 판정, 방향 바꾸기
         for rect in [
             self.wall_top,
