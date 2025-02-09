@@ -70,20 +70,30 @@ class Rectangle:
 
 class PingPong:
     def __init__(self, player1, player2, on_update):
-        self.on_update = on_update
-        self.player1 = player1
-        self.player2 = player2
+        # 전달받은 값
+        self.on_update = on_update  # 게임 상태가 업데이트 되었을 때 실행할 함수
+        self.player1 = player1  # 플레이어1 식별자
+        self.player2 = player2  # 플레이어2 식별자
 
+        # 화면 크기 및 타이밍
         self.width = 600
         self.height = 400
         self.tick = 0
         self.timedelta = 1 / 60
+
+        # 패들
         self.paddle_speed = 5
         self.paddle_width = 10
         self.paddle_height = 100
+        self.paddle_margin = 30
+
+        # 벽
         self.wall_depth = 10
 
+        # 공 초기화
         self.ball = Ball(self.width / 2, self.height / 2, 5, 5, 10)
+
+        # 벽 초기화
         self.wall_top = Rectangle(
             self.width / 2, -self.wall_depth / 2, self.width, self.wall_depth
         )
@@ -102,13 +112,20 @@ class PingPong:
             self.wall_depth,
             self.height,
         )
+
+        # 플레이어 키 상태 초기화
         self.player1_key_state = KeyState()
         self.player2_key_state = KeyState()
+
+        # 패들 초기화
         self.paddle1 = Rectangle(
-            30, self.height / 2, self.paddle_width, self.paddle_height
+            self.paddle_margin, self.height / 2, self.paddle_width, self.paddle_height
         )
         self.paddle2 = Rectangle(
-            570, self.height / 2, self.paddle_width, self.paddle_height
+            self.width - self.paddle_margin,
+            self.height / 2,
+            self.paddle_width,
+            self.paddle_height,
         )
 
     def get_game_state(self):
