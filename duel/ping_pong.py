@@ -137,8 +137,13 @@ class PingPong:
 
     async def game_loop(self):
         while True:
+            # 게임 상태 업데이트 (패들 움직임, 공 물리 계산 등등)
             self.fixed_update()
+
+            # 게임 상태 전송
             await self.on_update(self.get_game_state())
+
+            # 루트 간격 조절
             await asyncio.sleep(self.timedelta)
             self.tick += 1
 
@@ -172,10 +177,13 @@ class PingPong:
 
     def on_event(self, participant, event):
         action = event["action"]
+
+        # 플레이어가 키를 press/release 했을 때 키 상태 갱신
         if action == "key":
             key = event["key"]
             state = event["state"]
 
+            # 어떤 플레이어가 누른 것인지 구별
             if participant == self.player1:
                 self.player1_key_state.set_key_state(key, state)
             elif participant == self.player2:
