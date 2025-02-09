@@ -1,7 +1,7 @@
 import uuid
 from channels.generic.websocket import AsyncJsonWebsocketConsumer
 from .match_manager import MatchManager
-from .ping_pong import PingPongGameManager
+from .game_manager import PingPongGameManager
 
 
 class DuelConsumer(AsyncJsonWebsocketConsumer):

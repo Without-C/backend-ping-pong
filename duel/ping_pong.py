@@ -1,8 +1,11 @@
-import uuid
 import asyncio
 
 
 class KeyState:
+    """
+    어떤 키가 눌려있는지, 아닌지 추적하는 클래스
+    """
+
     def __init__(self):
         self.key_state = {}
 
@@ -17,6 +20,10 @@ class KeyState:
 
 
 class Ball:
+    """
+    핑퐁의 공을 담당
+    """
+
     def __init__(self, x, y, vx, vy, radius):
         self.x = x
         self.y = y
@@ -50,27 +57,15 @@ class Ball:
 
 
 class Rectangle:
+    """
+    핑퐁에서 벽과 패들을 담당
+    """
+
     def __init__(self, x, y, width, height):
         self.x = x
         self.y = y
         self.width = width
         self.height = height
-
-
-class PingPongGameManager:
-    def __init__(self):
-        self.games = {}
-
-    def create_game(self, participant1, participant2, on_update):
-        game_id = f"game_{uuid.uuid4().hex}"
-        game = PingPong(participant1, participant2, on_update)
-        task = asyncio.create_task(game.game_loop())
-        self.games[game_id] = game
-
-        return game_id
-
-    def on_event(self, game_id, participant, event):
-        self.games[game_id].on_event(participant, event)
 
 
 class PingPong:
@@ -168,11 +163,14 @@ class PingPong:
             self.paddle2,
         ]:
             self.ball.collide_with_rect(rect)
-        
+
         # 공 전진
         self.ball.update()
 
     def on_event(self, participant, event):
+        """
+        플래이어의 입력을 처리하는 메소드
+        """
         action = event["action"]
 
         # 플레이어가 키를 press/release 했을 때 키 상태 갱신
