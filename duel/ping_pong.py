@@ -148,32 +148,29 @@ class PingPong:
             self.tick += 1
 
     def fixed_update(self):
+        # 패들 움직이기
+        for key_state, paddle in [
+            (self.player1_key_state, self.paddle1),
+            (self.player2_key_state, self.paddle2),
+        ]:
+            if key_state.get_key_state("ArrowUp") or key_state.get_key_state("w"):
+                paddle.y -= self.paddle_speed
+            if key_state.get_key_state("ArrowDown") or key_state.get_key_state("s"):
+                paddle.y += self.paddle_speed
+
+        # 공 충돌 판정, 방향 바꾸기
+        for rect in [
+            self.wall_top,
+            self.wall_bottom,
+            self.wall_left,
+            self.wall_right,
+            self.paddle1,
+            self.paddle2,
+        ]:
+            self.ball.collide_with_rect(rect)
+        
+        # 공 전진
         self.ball.update()
-
-        if self.player1_key_state.get_key_state(
-            "ArrowUp"
-        ) or self.player1_key_state.get_key_state("w"):
-            self.paddle1.y -= self.paddle_speed
-        if self.player1_key_state.get_key_state(
-            "ArrowDown"
-        ) or self.player1_key_state.get_key_state("s"):
-            self.paddle1.y += self.paddle_speed
-
-        if self.player2_key_state.get_key_state(
-            "ArrowUp"
-        ) or self.player2_key_state.get_key_state("w"):
-            self.paddle2.y -= self.paddle_speed
-        if self.player2_key_state.get_key_state(
-            "ArrowDown"
-        ) or self.player2_key_state.get_key_state("s"):
-            self.paddle2.y += self.paddle_speed
-
-        self.ball.collide_with_rect(self.wall_top)
-        self.ball.collide_with_rect(self.wall_bottom)
-        self.ball.collide_with_rect(self.wall_left)
-        self.ball.collide_with_rect(self.wall_right)
-        self.ball.collide_with_rect(self.paddle1)
-        self.ball.collide_with_rect(self.paddle2)
 
     def on_event(self, participant, event):
         action = event["action"]
