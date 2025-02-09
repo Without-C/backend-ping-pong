@@ -148,7 +148,7 @@ class PingPong:
             },
         }
 
-    async def game_loop(self):
+    async def run(self):
         while True:
             # 게임 상태 업데이트 (패들 움직임, 공 물리 계산 등등)
             self.update()

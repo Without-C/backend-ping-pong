@@ -10,7 +10,7 @@ class PingPongGameManager:
     def create_game(self, participant1, participant2, on_update):
         game_id = f"game_{uuid.uuid4().hex}"
         game = PingPong(participant1, participant2, on_update)
-        task = asyncio.create_task(game.game_loop())
+        task = asyncio.create_task(game.run())
         self.games[game_id] = game
 
         return game_id
