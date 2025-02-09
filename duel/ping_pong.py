@@ -138,7 +138,7 @@ class PingPong:
     async def game_loop(self):
         while True:
             # 게임 상태 업데이트 (패들 움직임, 공 물리 계산 등등)
-            self.fixed_update()
+            self.update()
 
             # 게임 상태 전송
             await self.on_update(self.get_game_state())
@@ -147,7 +147,7 @@ class PingPong:
             await asyncio.sleep(self.timedelta)
             self.tick += 1
 
-    def fixed_update(self):
+    def update(self):
         # 패들 움직이기
         for key_state, paddle in [
             (self.player1_key_state, self.paddle1),
