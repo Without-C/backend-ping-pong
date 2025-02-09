@@ -70,6 +70,10 @@ class Rectangle:
 
 class PingPong:
     def __init__(self, player1, player2, on_update):
+        self.on_update = on_update
+        self.player1 = player1
+        self.player2 = player2
+
         self.width = 600
         self.height = 400
         self.tick = 0
@@ -98,9 +102,6 @@ class PingPong:
             self.wall_depth,
             self.height,
         )
-        self.on_update = on_update
-        self.player1 = player1
-        self.player2 = player2
         self.player1_key_state = KeyState()
         self.player2_key_state = KeyState()
         self.paddle1 = Rectangle(
